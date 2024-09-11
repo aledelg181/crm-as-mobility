@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { useState, useEffect } from 'react';
 import {
@@ -15,7 +15,7 @@ import {
 
 export default function Component() {
   const [search, setSearch] = useState('');
-  const [sort, setSort] = useState({ key: 'full_name', order: 'asc' });
+  const [sort, setSort] = useState({ key: '_id', order: 'desc' }); // Cambiamos el campo inicial a '_id' y orden descendente
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [clients, setClients] = useState([]);
@@ -23,14 +23,13 @@ export default function Component() {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const response = await fetch('/api');
+        const response = await fetch('/api', { cache: 'no-store' });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log(data.clients)
+        console.log('Datos de clientes en producción:', data.clients);
         setClients(data.clients);
-     
       } catch (error) {
         console.error('Error fetching clients:', error);
       }
@@ -58,7 +57,7 @@ export default function Component() {
           }
         })
         .slice((page - 1) * pageSize, page * pageSize)
-    : []; 
+    : [];
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -128,22 +127,22 @@ export default function Component() {
             </TableRow>
           </TableHead>
           <TableBody>
-           {filteredClients.length > 0 ? (
-  filteredClients.map((client) => (
-    <TableRow key={client._id}>
-      <TableCell>{client.full_name || 'No disponible'}</TableCell>
-      <TableCell>{client.pais || 'No disponible'}</TableCell>
-      <TableCell>{client.correo_electronico || 'No disponible'}</TableCell>
-      <TableCell>{client.telefono || 'No disponible'}</TableCell>
-    </TableRow>
-  ))
-) : (
-  <TableRow>
-    <TableCell colSpan={4} align="center">
-      No hay clientes disponibles.
-    </TableCell>
-  </TableRow>
-)}
+            {filteredClients.length > 0 ? (
+              filteredClients.map((client) => (
+                <TableRow key={client._id}>
+                  <TableCell>{client.full_name || 'No disponible'}</TableCell>
+                  <TableCell>{client.pais || 'No disponible'}</TableCell>
+                  <TableCell>{client.correo_electronico || 'No disponible'}</TableCell>
+                  <TableCell>{client.telefono || 'No disponible'}</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={4} align="center">
+                  No hay clientes disponibles.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
